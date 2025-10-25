@@ -1,0 +1,5 @@
+spacy
+langextract
+requests
+python-dotenv
+langchain-openai
