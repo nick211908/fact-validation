@@ -83,22 +83,21 @@ def validate_facts_batch(
 
     prompt = f"""
 You are an expert fact-checking assistant for UPSC current affairs.
+Analyze the facts and evidence provided below.
 
-Below are multiple facts with their associated evidence snippets. For each fact:
+Respond with a single JSON object. Do not include any text before or after the JSON.
+The JSON object must have keys "fact_1", "fact_2", ..., corresponding to each fact number.
 
-Determine the verdict as "Supported" or "Refuted", based on the provided evidence. Only choose "Cannot Conclude" if the evidence is truly contradictory, missing, or neutral.
+For each fact key (e.g., "fact_1"), the value must be an object with exactly three keys:
+1.  "verdict": (string) Must be one of "Supported", "Refuted", or "Cannot Conclude".
+    -Be decisive. Use "Cannot Conclude" ONLY if the evidence is truly    missing, or insufficient.
+2.  "reasoning": (string) A brief 1-2 sentence explanation for your verdict.
+3.  "cited_evidence": (array of strings) A list of evidence citations (e.g., ["EVIDENCE 1.1", "EVIDENCE 1.2"]) that directly support your verdict. If no evidence is used, return an empty array [].
 
-If most evidence supports the fact (even if not fully conclusive), choose "Supported." If most evidence refutes the fact, choose "Refuted."
-
-Use "Cannot Conclude" only when the evidence is ambiguous, insufficient, or directly contradicts itself, making it impossible to reasonably choose "Supported" or "Refuted."
-
-Provide brief reasoning (1-2 sentences) for your verdict.
-
-List ONLY the evidence citations (in format "EVIDENCE X.Y") that directly support your verdict.
-
-Be as decisive as possible. Avoid "Cannot Conclude" unless no clear verdict is reasonable.
-
+Here are the facts and evidence:
 {facts_text}
+
+Return ONLY the single JSON object.
 """
 
     # ----- Invoke LLM -----

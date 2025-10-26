@@ -1,10 +1,12 @@
 import json
 from fact_extraction import extract_facts
 from validation_and_reasoning import validate_facts_batch
-from evidence.web_search import get_facts_evidence
+from evidence.web_search import google_search
+
 
 def main():
-    with open(r"D:\Project\fact_validation\qa_pairs.json", "r", encoding="utf-8") as f:
+    # Read QA pairs from the local project file
+    with open("qa_pairs.json", "r", encoding="utf-8") as f:
         data = json.load(f)
 
     qa_pairs = data.get("qa_pairs", [])
@@ -20,15 +22,21 @@ def main():
         print(f"Q: {question}")
         print(f"A: {answer}")
 
-        fact_queries =  extract_facts(answer)
-        if not fact_queries:
+        # Extract a list of facts (no query mapping)
+        facts = extract_facts(answer)
+        if not facts:
             print("No factual statements detected.\n")
             continue
 
-        evidence_dict =  get_facts_evidence(fact_queries, n_results=3)
+        # Build evidence dict: fact -> list of evidence items from web search using the fact as the query
+        evidence_dict = {}
+        for fact in facts:
+            evidence = google_search(fact, n_results=5)
+            evidence_dict[fact] = evidence
+
         # Skip LLM validation if no evidence is found for any fact
         if all(not v for v in evidence_dict.values()):
-            for fact in fact_queries:
+            for fact in facts:
                 print(f"\nFact: {fact}")
                 print("Verdict: No evidence")
                 print("Reasoning: No relevant web data found.\n")
