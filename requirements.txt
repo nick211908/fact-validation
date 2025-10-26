@@ -1,5 +1,13 @@
-spacy
+# Core LangChain and Language Models
+langchain
+langchain-openai
+langchain-google-genai
+langchain-tavily
 langextract
 requests
-python-dotenv
-langchain-openai
+
+# NLP and Text Processing
+
+
+# API Integrations
+

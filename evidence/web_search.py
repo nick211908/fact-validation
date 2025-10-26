@@ -54,7 +54,7 @@ def google_search(query, n_results=3):
         resp = requests.post(url, json=payload, headers=headers, timeout=30)
         resp.raise_for_status()
         data = resp.json()
-        print(data)
+        # print(data)
         results = []
         for item in data.get("results", []):
             # Maintain exact same format as Google Custom Search
